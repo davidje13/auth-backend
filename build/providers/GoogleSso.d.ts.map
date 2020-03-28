@@ -1,0 +1,1 @@
+{"version":3,"file":"GoogleSso.d.ts","sourceRoot":"","sources":["../../src/providers/GoogleSso.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,YAAY;IAC3B,QAAQ,EAAE,MAAM,CAAC;IACjB,OAAO,EAAE,MAAM,CAAC;IAChB,YAAY,EAAE,MAAM,CAAC;CACtB;AAED,wBAA8B,SAAS,CACrC,MAAM,EAAE,YAAY,EACpB,aAAa,EAAE,MAAM,GACpB,OAAO,CAAC,MAAM,CAAC,CA0BjB"}
