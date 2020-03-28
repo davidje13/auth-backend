@@ -7,6 +7,7 @@ import {
   TokenGranter,
   buildAuthenticationRouter,
 } from './router';
+import buildMockSsoApp from './mock-sso/buildMockSsoApp';
 
 interface AuthenticationBackend {
   router: express.Router;
@@ -22,6 +23,7 @@ export type {
 export {
   AuthenticationService,
   buildAuthenticationRouter,
+  buildMockSsoApp,
 };
 
 export function buildAuthenticationBackend(

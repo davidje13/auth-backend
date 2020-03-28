@@ -45,6 +45,33 @@ express()
   .listen(8080);
 ```
 
+### Mock SSO server
+
+This package also contains a mock SSO server, which can be run alongside your app
+(this is useful for local development and testing):
+
+```javascript
+import express from 'express';
+import { buildAuthenticationBackend, buildMockSsoApp } from 'auth-backend';
+
+buildMockSsoApp().listen(9000);
+
+const config =
+  google: {
+    clientId: 'my-google-client-id',
+    authUrl: 'http://localhost:9000/auth',
+    tokenInfoUrl: 'http://localhost:9000/tokeninfo',
+  },
+}
+
+// ...
+
+const auth = buildAuthenticationBackend(config, tokenGranter);
+express()
+  .use('/my-prefix', auth.router)
+  .listen(8080);
+```
+
 ## API
 
 This expects you to create a frontend which handles the user interaction and propagates returned data to the API.

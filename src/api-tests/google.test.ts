@@ -75,7 +75,7 @@ describe('/google', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.userToken).not.toBeTruthy();
-    expect(response.body.error).toEqual('validation error nope');
+    expect(response.body.error).toEqual('validation error: nope');
   });
 
   it('responds HTTP Bad Request for audience mismatch', async () => {

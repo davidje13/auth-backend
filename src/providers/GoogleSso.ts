@@ -24,7 +24,7 @@ export default async function extractId(
 
   const externalTokenInfo = await res.json();
   if (res.status !== 200 || externalTokenInfo.error) {
-    throw new Error(`validation error ${externalTokenInfo.error}`);
+    throw new Error(`validation error: ${externalTokenInfo.error}`);
   }
 
   if (externalTokenInfo.aud !== config.clientId) {

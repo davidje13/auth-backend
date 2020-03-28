@@ -26,7 +26,7 @@ export default async function extractId(
 
   const error = accessResults.get('error');
   if (error) {
-    throw new Error(`validation error ${error}`);
+    throw new Error(`validation error: ${error}`);
   }
 
   const accessToken = accessResults.get('access_token');

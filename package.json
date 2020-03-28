@@ -27,7 +27,9 @@
   },
   "homepage": "https://github.com/davidje13/auth-backend#readme",
   "dependencies": {
-    "node-fetch": "2.x"
+    "jwt-simple": "0.x",
+    "node-fetch": "2.x",
+    "uuid": "7.x"
   },
   "peerDependencies": {
     "express": "4.x"
@@ -36,10 +38,11 @@
     "@neutrinojs/airbnb-base": "9.x",
     "@neutrinojs/jest": "9.x",
     "@neutrinojs/library": "9.x",
-    "@types/express": "^4.17.3",
+    "@types/express": "4.x",
     "@types/jest": "25.x",
     "@types/node-fetch": "2.x",
     "@types/supertest": "2.x",
+    "@types/uuid": "7.x",
     "eslint": "6.x",
     "express": "4.x",
     "jest": "25.x",
