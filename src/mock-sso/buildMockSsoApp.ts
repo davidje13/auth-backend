@@ -1,13 +1,14 @@
 import crypto from 'crypto';
 import jwt from 'jwt-simple';
 import express from 'express';
+import type { Express } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import authContent from './authContent';
 
 // This is for local development and testing; it simulates a
 // Google sign in handshake.
 
-export default (): express.Express => {
+export default (): Express => {
   const keys = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048,
     privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
