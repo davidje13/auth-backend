@@ -47,8 +47,12 @@ express()
 
 ### Mock SSO server
 
+<img src="docs/mock-sso.png" width="250" align="right" style="margin-top: -2em">
+
 This package also contains a mock SSO server, which can be run alongside your app
 (this is useful for local development and testing):
+
+<div style="clear: both"></div>
 
 ```javascript
 import express from 'express';
