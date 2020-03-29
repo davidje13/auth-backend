@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/davidje13/auth-backend#readme",
   "dependencies": {
-    "jwt-simple": "0.x",
+    "jwt-simple": "^0.5.6",
     "node-fetch": "2.x",
     "uuid": "7.x"
   },
