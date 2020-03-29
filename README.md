@@ -62,7 +62,7 @@ const config =
     authUrl: 'http://localhost:9000/auth',
     tokenInfoUrl: 'http://localhost:9000/tokeninfo',
   },
-}
+};
 
 // ...
 
@@ -70,6 +70,63 @@ const auth = buildAuthenticationBackend(config, tokenGranter);
 express()
   .use('/my-prefix', auth.router)
   .listen(8080);
+```
+
+## Authentication Providers
+
+### Google sign in
+
+You will need a Google client ID:
+
+1. Go to <https://console.developers.google.com/apis>
+2. Create a new project (if necessary)
+3. In the "Credentials" screen, find the auto-generated OAuth client
+   entry (if it was not created automatically, create one manually with
+   "Create credentials" &rarr; "OAuth client ID")
+4. Record the client ID (you will not need the client secret)
+5. Update the authorised JavaScript origins to match your deployment.
+   e.g. for local testing, this could be `http://localhost:8080`
+6. Update the authorised redirect URIs to the same value, with
+   `/<my-prefix>/google` appended to the end.
+7. You may want to change the "Support email" listed under
+   "OAuth consent screen", as this will be visible to users of your
+   deployed app.
+
+You can now configure the client ID in your app:
+
+```javascript
+const config =
+  google: {
+    clientId: 'something.apps.googleusercontent.com', // <-- replace
+    authUrl: 'https://accounts.google.com/o/oauth2/auth',
+    tokenInfoUrl: 'https://oauth2.googleapis.com/tokeninfo',
+  },
+};
+```
+
+### GitHub sign in
+
+You will need a GitHub client ID:
+
+1. Go to <https://github.com/settings/applications/new>
+2. Set the "Homepage URL" to match your deployment. e.g. for local
+   testing, this could be `http://localhost:8080`
+3. Set the "Authorization callback URL" to the same value, with
+   `/<my-prefix>/github` appended to the end.
+4. Record the client ID and client secret.
+
+You can now configure the client ID and secret in your app:
+
+```javascript
+const config =
+  github: {
+    clientId: 'my-github-client-id',         // <-- replace
+    clientSecret: 'my-github-client-secret', // <-- replace
+    authUrl: 'https://github.com/login/oauth/authorize',
+    accessTokenUrl: 'https://github.com/login/oauth/access_token',
+    userUrl: 'https://api.github.com/user',
+  },
+};
 ```
 
 ## API
