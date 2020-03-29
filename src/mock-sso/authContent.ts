@@ -58,8 +58,7 @@ export default (query: Record<string, string>): string => `
     <form method="POST">
       <h1>Mock OAuth service</h1>
       <p>
-        This is a mock implementation of an OAuth server which is used
-        for local testing (including end-to-end automated tests).
+        This is a mock implementation of an OAuth server for testing purposes.
       </p>
       <input type="hidden" name="redirect_uri" value="${htmlSafe(query.redirect_uri)}" />
       <input type="hidden" name="nonce" value="${htmlSafe(query.nonce)}" />
