@@ -1,6 +1,6 @@
-function htmlSafe(value?: string): string {
+function htmlSafe(value?: unknown): string {
   // Thanks, https://stackoverflow.com/a/6234804/1180785
-  if (!value) {
+  if (!value || typeof value !== 'string') {
     return '';
   }
   return value
@@ -11,7 +11,7 @@ function htmlSafe(value?: string): string {
     .replace(/'/g, '&#039;');
 }
 
-export default (query: Record<string, string>): string => `
+export default (query: Record<string, unknown>): string => `
 <html>
   <head>
     <title>Mock OAuth service</title>

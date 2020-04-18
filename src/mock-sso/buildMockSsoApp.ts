@@ -53,6 +53,9 @@ export default (): Express => {
   app.get('/tokeninfo', (req, res) => {
     const { id_token: idToken } = req.query;
     try {
+      if (typeof idToken !== 'string') {
+        throw new Error('Expected string id_token');
+      }
       res.json(jwt.decode(idToken, keys.publicKey, false, 'RS256'));
     } catch (e) {
       res.status(400).json({ error: 'validation failure' });
