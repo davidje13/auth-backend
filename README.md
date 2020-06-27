@@ -3,7 +3,7 @@
 Provides minimal backend functionality for integrating with external
 authentication providers.
 
-Currently supports GitHub and Google.
+Currently supports Google, GitHub and GitLab.
 
 ## Install dependency
 
@@ -17,7 +17,7 @@ npm install --save git+https://github.com/davidje13/auth-backend.git#semver:^1.0
 import express from 'express';
 import { buildAuthenticationBackend } from 'auth-backend';
 
-const config =
+const config = {
   google: {
     clientId: 'my-google-client-id',
     authUrl: 'https://accounts.google.com/o/oauth2/auth',
@@ -29,6 +29,11 @@ const config =
     authUrl: 'https://github.com/login/oauth/authorize',
     accessTokenUrl: 'https://github.com/login/oauth/access_token',
     userUrl: 'https://api.github.com/user',
+  },
+  gitlab: {
+    clientId: 'my-gitlab-client-id',
+    authUrl: 'https://gitlab.com/oauth/authorize',
+    tokenInfoUrl: 'https://gitlab.com/oauth/token/info',
   },
 };
 
@@ -44,6 +49,9 @@ express()
   .use('/my-prefix', auth.router)
   .listen(8080);
 ```
+
+You will need to do some work for each service on the client-side too.
+See the source in `/example/static` for a reference implementation.
 
 ### Mock SSO server
 
@@ -133,6 +141,30 @@ const config =
 };
 ```
 
+### GitLab sign in
+
+You will need a GitLab client ID:
+
+1. Go to <https://gitlab.com/profile/applications>
+2. Set the "Redirect URI" to match your deployment with
+   `/<my-prefix>/gitlab` appended to the end. e.g. for local
+   testing, this could be `http://localhost:8080/<my-prefix>/gitlab`
+3. Untick the "confidential" option. You do not need to enable
+   any scopes.
+4. Record the application ID (you will not need the secret).
+
+You can now configure the application ID in your app:
+
+```javascript
+const config =
+  gitlab: {
+    clientId: 'my-gitlab-application-id', // <-- replace
+    authUrl: 'https://gitlab.com/oauth/authorize',
+    tokenInfoUrl: 'https://gitlab.com/oauth/token/info',
+  },
+};
+```
+
 ## API
 
 This expects you to create a frontend which handles the user interaction and propagates returned data to the API.
@@ -152,6 +184,10 @@ Example:
   "github": {
     "clientId": "my-github-client-id",
     "authUrl": "https://github.com/login/oauth/authorize"
+  },
+  "gitlab": {
+    "clientId": "my-gitlab-client-id",
+    "authUrl": "https://gitlab.com/oauth/authorize"
   }
 }
 ```
@@ -160,7 +196,7 @@ Any services which have not been configured will be omitted from the response.
 
 ### POST `/<service-name>`
 
-Where `<service-name>` is `google` or `github`.
+Where `<service-name>` is `google`, `github` or `gitlab`.
 
 This expects to receive JSON-encoded data:
 

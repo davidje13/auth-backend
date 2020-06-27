@@ -16,6 +16,11 @@ describe('AuthenticationService', () => {
           accessTokenUrl: 'github-access-token-url',
           userUrl: 'github-user-url',
         },
+        gitlab: {
+          clientId: 'gitlab-client-id',
+          authUrl: 'gitlab-auth-url',
+          tokenInfoUrl: 'gitlab-token-info-url',
+        },
       });
 
       expect(service.clientConfig).toEqual({
@@ -26,6 +31,10 @@ describe('AuthenticationService', () => {
         github: {
           clientId: 'github-client-id',
           authUrl: 'github-auth-url',
+        },
+        gitlab: {
+          clientId: 'gitlab-client-id',
+          authUrl: 'gitlab-auth-url',
         },
       });
     });

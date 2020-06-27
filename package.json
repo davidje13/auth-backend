@@ -9,6 +9,7 @@
   "types": "build/index.d.ts",
   "scripts": {
     "build": "webpack --mode production",
+    "start": "npm run build && node example/main.js",
     "lint": "eslint --format codeframe --ext mjs,jsx,js,tsx,ts --report-unused-disable-directives src && tsc",
     "test": "jest && npm run lint",
     "test:watch": "jest --watch"
