@@ -8,7 +8,7 @@ Currently supports Google, GitHub and GitLab.
 ## Install dependency
 
 ```bash
-npm install --save git+https://github.com/davidje13/auth-backend.git#semver:^1.0.2
+npm install --save git+https://github.com/davidje13/auth-backend.git#semver:^1.0.3
 ```
 
 ## Usage
