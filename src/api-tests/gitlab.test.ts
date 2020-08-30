@@ -9,14 +9,12 @@ describe('/gitlab', () => {
     ssoApp.get('/', (req, res) => {
       switch (req.headers.authorization) {
         case 'Bearer my-successful-external-token':
-          // eslint-disable-next-line @typescript-eslint/camelcase
           res.json({ application: { uid: 'my-client-id' }, resource_owner_id: 1234 });
           return;
         case 'Bearer my-bad-external-token':
           res.json({ error: 'nope' });
           return;
         case 'Bearer my-other-external-token':
-          // eslint-disable-next-line @typescript-eslint/camelcase
           res.json({ application: { uid: 'another-client-id' }, resource_owner_id: 1234 });
           return;
         default:
