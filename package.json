@@ -1,5 +1,5 @@
 {
-  "name": "auth-backend",
+  "name": "authentication-backend",
   "version": "1.0.3",
   "description": "minimal API for integration with external authentication providers",
   "files": [

@@ -52,7 +52,7 @@ module.exports = {
       },
     }),
     library({
-      name: 'auth-backend',
+      name: 'authentication-backend',
       target: 'node',
       babel: {
         presets: [

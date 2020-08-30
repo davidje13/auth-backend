@@ -1,4 +1,4 @@
-# Auth Backend
+# Authentication Backend
 
 Provides minimal backend functionality for integrating with external
 authentication providers.
@@ -8,14 +8,14 @@ Currently supports Google, GitHub and GitLab.
 ## Install dependency
 
 ```bash
-npm install --save git+https://github.com/davidje13/auth-backend.git#semver:^1.0.3
+npm install --save authentication-backend
 ```
 
 ## Usage
 
 ```javascript
 import express from 'express';
-import { buildAuthenticationBackend } from 'auth-backend';
+import { buildAuthenticationBackend } from 'authentication-backend';
 
 const config = {
   google: {
@@ -64,7 +64,7 @@ This package also contains a mock SSO server, which can be run alongside your ap
 
 ```javascript
 import express from 'express';
-import { buildAuthenticationBackend, buildMockSsoApp } from 'auth-backend';
+import { buildAuthenticationBackend, buildMockSsoApp } from 'authentication-backend';
 
 buildMockSsoApp().listen(9000);
 
