@@ -12,7 +12,7 @@
     "build": "webpack --mode production",
     "start": "npm run build && node example/main.js",
     "prelint": "rewrite-tsconfig",
-    "lint": "eslint --format codeframe --ext mjs,jsx,js,tsx,ts --report-unused-disable-directives src && tsc",
+    "lint": "eslint --format codeframe --report-unused-disable-directives src && tsc",
     "test": "jest",
     "posttest": "npm run lint",
     "test:watch": "jest --watch"
