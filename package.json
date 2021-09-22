@@ -36,7 +36,7 @@
     "uuid": "8.x"
   },
   "peerDependencies": {
-    "express": "4.x"
+    "express": "4.x || 5.x"
   },
   "devDependencies": {
     "@neutrinojs/airbnb-base": "9.x",
@@ -48,13 +48,13 @@
     "@types/supertest": "2.x",
     "@types/uuid": "8.x",
     "eslint": "7.x",
-    "express": "4.x",
+    "express": "5.0.0-alpha.8",
     "jest": "26.x",
     "neutrino": "9.x",
     "neutrinojs-typescript": "1.x",
     "neutrinojs-typescript-eslint": "1.x",
-    "supertest": "4.x",
-    "typescript": "4.0.x",
+    "supertest": "6.x",
+    "typescript": "4.4.x",
     "webpack": "4.x",
     "webpack-cli": "3.x"
   }

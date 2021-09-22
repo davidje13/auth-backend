@@ -37,8 +37,8 @@ export function buildAuthenticationRouter(
 
       const userToken = tokenGranter(`${name}-${externalId}`, name, externalId);
       res.status(200).json({ userToken });
-    } catch (e) {
-      if (e.message === 'validation internal error') {
+    } catch (e: unknown) {
+      if (!(e instanceof Error) || e.message === 'validation internal error') {
         res.status(500).json({ error: 'internal error' });
       } else {
         res.status(400).json({ error: e.message || 'unknown error' });
