@@ -44,6 +44,7 @@ export const loginPage = (query: Record<string, unknown>): string => `
         font-size: 0.9em;
         padding: 4px;
         margin: 0 10px;
+        box-sizing: border-box;
       }
       button {
         font-size: 0.9em;
