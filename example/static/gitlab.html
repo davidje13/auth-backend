@@ -1,36 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<title>GitLab: Example SSO client</title>
-</head>
-<body>
-<h1>Response from GitLab</h1>
-<dl>
-<dt>External Token</dt><dd id="token"></dd>
-<dt>State</dt><dd id="state"></dd>
-<dt>Result</dt><dd id="result"></dd>
-</dl>
-<a href="/">Back</a>
-<script>
-const hashParams = new URLSearchParams(document.location.hash.substr(1));
+  <head>
+    <title>GitLab: Example SSO client</title>
+  </head>
+  <body>
+    <h1>Response from GitLab</h1>
+    <dl>
+      <dt>External Token</dt>
+      <dd id="token"></dd>
+      <dt>State</dt>
+      <dd id="state"></dd>
+      <dt>Result</dt>
+      <dd id="result"></dd>
+    </dl>
+    <a href="/">Back</a>
+    <script>
+      const hashParams = new URLSearchParams(document.location.hash.substr(1));
 
-const externalToken = hashParams.get('access_token');
-const state = hashParams.get('state');
+      const externalToken = hashParams.get('access_token');
+      const state = hashParams.get('state');
 
-document.getElementById('token').innerText = externalToken;
-document.getElementById('state').innerText = state;
+      document.getElementById('token').innerText = externalToken;
+      document.getElementById('state').innerText = state;
 
-if (JSON.parse(state).nonce !== window.sessionStorage.getItem('login-nonce')) {
-  document.getElementById('result').innerText = `nonce mismatch!`;
-} else {
-  fetch('api/sso/gitlab', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ externalToken }),
-  }).then((res) => res.text().then((data) => {
-    document.getElementById('result').innerText = `${res.status}: ${data}`;
-  }));
-}
-</script>
-</body>
+      if (
+        JSON.parse(state).nonce !== window.sessionStorage.getItem('login-nonce')
+      ) {
+        document.getElementById('result').innerText = `nonce mismatch!`;
+      } else {
+        fetch('api/sso/gitlab', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ externalToken }),
+        }).then((res) =>
+          res.text().then((data) => {
+            document.getElementById('result').innerText =
+              `${res.status}: ${data}`;
+          }),
+        );
+      }
+    </script>
+  </body>
 </html>

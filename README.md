@@ -14,6 +14,7 @@ npm install --save authentication-backend
 ## Usage
 
 ```javascript
+import { randomUUID } from 'node:crypto';
 import express from 'express';
 import { buildAuthenticationBackend } from 'authentication-backend';
 
@@ -39,15 +40,13 @@ const config = {
 
 function tokenGranter(userId, service, externalId) {
   // database-based example:
-  const myUserSessionToken = uuidv4();
+  const myUserSessionToken = randomUUID();
   myDatabase.recordUserSession(myUserSessionToken, userId);
   return myUserSessionToken;
 }
 
 const auth = buildAuthenticationBackend(config, tokenGranter);
-express()
-  .use('/my-prefix', auth.router)
-  .listen(8080);
+express().use('/my-prefix', auth.router).listen(8080);
 ```
 
 You will need to do some work for each service on the client-side too.

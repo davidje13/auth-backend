@@ -1,19 +1,14 @@
-/* This file is auto-generated;
- * Edit .neutrinorc.js to change configuration.
- */
 {
   "compilerOptions": {
+    "target": "es2023",
+    "lib": ["es2023"],
+    "module": "nodenext",
     "strict": true,
-    "importsNotUsedAsValues": "error",
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noEmit": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "isolatedModules": true,
+    "erasableSyntaxOnly": true,
+    "skipLibCheck": true,
+    "noEmit": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

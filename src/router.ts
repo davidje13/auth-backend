@@ -1,9 +1,13 @@
 import express from 'express';
-import type AuthenticationService from './AuthenticationService';
+import { type AuthenticationService } from './AuthenticationService';
 
 const JSON_BODY = express.json({ limit: 4 * 1024 });
 
-export type TokenGranter = (userId: string, service: string, externalId: string) => string;
+export type TokenGranter = (
+  userId: string,
+  service: string,
+  externalId: string,
+) => string;
 
 export function buildAuthenticationRouter(
   authenticationService: AuthenticationService,
@@ -30,7 +34,10 @@ export function buildAuthenticationRouter(
     }
 
     try {
-      const externalId = await authenticationService.extractId(name, externalToken);
+      const externalId = await authenticationService.extractId(
+        name,
+        externalToken,
+      );
       if (!externalId) {
         throw new Error('failed to get user ID');
       }

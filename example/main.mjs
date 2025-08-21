@@ -1,6 +1,8 @@
-const path = require('path');
-const express = require('express');
-const { buildAuthenticationBackend } = require('../build');
+import { join, dirname } from 'node:path';
+import express from 'express';
+import { buildAuthenticationBackend } from '../build';
+
+const BASEDIR = dirname(new URL(import.meta.url).pathname);
 
 const config = {
   google: {
@@ -17,7 +19,8 @@ const config = {
   },
   gitlab: {
     // Auth Backend Local Testing - http://localhost:8080/gitlab.html, no scopes
-    clientId: '0f048a5b0edc29ff7b2697f827805b207f68f63db94507cfd9db57e4ac0f3531',
+    clientId:
+      '0f048a5b0edc29ff7b2697f827805b207f68f63db94507cfd9db57e4ac0f3531',
     authUrl: 'https://gitlab.com/oauth/authorize',
     tokenInfoUrl: 'https://gitlab.com/oauth/token/info',
   },
@@ -30,8 +33,8 @@ function tokenGranter(userId, service, externalId) {
 const auth = buildAuthenticationBackend(config, tokenGranter);
 express()
   .use('/api/sso', auth.router)
-  .use(express.static(path.join(__dirname, 'static')))
-  .listen(8080, 'localhost', () => {
-    process.stdout.write('Available at http://localhost:8080/\n');
+  .use(express.static(join(BASEDIR, 'static')))
+  .listen(8080, '127.0.0.1', () => {
+    process.stdout.write('Available at http://127.0.0.1:8080/\n');
     process.stdout.write('Press Ctrl+C to stop\n');
   });

@@ -1,41 +1,34 @@
+import type { Server } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import type express from 'express';
-import type { Server } from 'http';
-import type { AddressInfo } from 'net';
+import type { TypedParameter, TypedParameters } from 'lean-test';
+
+type MaybePromise<T> = Promise<T> | T;
 
 export function addressToString(addr: AddressInfo | string): string {
   if (typeof addr === 'string') {
     return addr;
   }
   const { address, family, port } = addr;
-  const host = (family === 'IPv6') ? `[${address}]` : address;
+  const host = family === 'IPv6' ? `[${address}]` : address;
   return `http://${host}:${port}`;
 }
 
-export default (
-  serverFn: () => (express.Express | Promise<express.Express>),
-): Server => {
-  let server: Server | null;
-
-  beforeEach((done) => {
-    server = null;
-    Promise.resolve(serverFn())
-      .then((rawServer) => {
-        server = rawServer.listen(0, 'localhost', done);
-      })
-      .catch((e) => done.fail(e));
+export function testServerRunner(
+  serverFn: (opts: TypedParameters) => MaybePromise<express.Express>,
+): TypedParameter<Server> {
+  return beforeEach<Server>(async (opts) => {
+    const app = await serverFn(opts);
+    let server: Server;
+    await new Promise<void>((resolve, reject) => {
+      server = app.listen(0, '127.0.0.1', (err) =>
+        err ? reject(err) : resolve(),
+      );
+    });
+    opts.setParameter(server!);
+    return () =>
+      new Promise((resolve, reject) =>
+        server.close((err) => (err ? reject(err) : resolve())),
+      );
   });
-
-  afterEach((done) => {
-    if (server) {
-      const tempServer = server;
-      server = null;
-      tempServer.close(done);
-    } else {
-      done();
-    }
-  });
-
-  return new Proxy({}, {
-    get: (o, prop: keyof Server): any => server![prop],
-  }) as Readonly<Server>;
-};
+}

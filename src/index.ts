@@ -1,13 +1,11 @@
 import type express from 'express';
-import AuthenticationService, {
+import {
+  AuthenticationService,
   AuthenticationConfiguration,
   AuthenticationClientConfiguration,
 } from './AuthenticationService';
-import {
-  TokenGranter,
-  buildAuthenticationRouter,
-} from './router';
-import buildMockSsoApp from './mock-sso/buildMockSsoApp';
+import { type TokenGranter, buildAuthenticationRouter } from './router';
+export { buildMockSsoApp } from './mock-sso/buildMockSsoApp';
 
 interface AuthenticationBackend {
   router: express.Router;
@@ -20,11 +18,7 @@ export type {
   AuthenticationClientConfiguration,
 };
 
-export {
-  AuthenticationService,
-  buildAuthenticationRouter,
-  buildMockSsoApp,
-};
+export { AuthenticationService, buildAuthenticationRouter };
 
 export function buildAuthenticationBackend(
   configs: Partial<AuthenticationConfiguration>,

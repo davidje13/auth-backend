@@ -1,4 +1,5 @@
-import AuthenticationService from './AuthenticationService';
+import { AuthenticationService } from './AuthenticationService';
+import 'lean-test';
 
 describe('AuthenticationService', () => {
   describe('clientConfig', () => {

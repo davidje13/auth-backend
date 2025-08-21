@@ -11,8 +11,9 @@ function htmlSafe(value?: unknown): string {
     .replace(/'/g, '&#039;');
 }
 
-export default (query: Record<string, unknown>): string => `
-<html>
+export const loginPage = (query: Record<string, unknown>): string => `
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Mock OAuth service</title>
     <style>

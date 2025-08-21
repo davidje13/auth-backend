@@ -1,12 +1,16 @@
-import fetch from 'node-fetch';
-
 export interface GoogleConfig {
   clientId: string;
   authUrl: string;
   tokenInfoUrl: string;
 }
 
-export default async function extractId(
+interface ResponseJSON {
+  error?: string;
+  aud: string;
+  sub: string;
+}
+
+export async function extractId(
   config: GoogleConfig,
   externalToken: string,
 ): Promise<string> {
@@ -22,7 +26,7 @@ export default async function extractId(
     throw new Error('validation internal error');
   }
 
-  const externalTokenInfo = await res.json();
+  const externalTokenInfo = (await res.json()) as ResponseJSON;
   if (res.status !== 200 || externalTokenInfo.error) {
     throw new Error(`validation error: ${externalTokenInfo.error}`);
   }

@@ -1,78 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<title>Example SSO client</title>
-</head>
-<body>
-<h1>Pick a sign in provider:</h1>
-<button id="google" disabled>Google</button>
-<button id="github" disabled>GitHub</button>
-<button id="gitlab" disabled>GitLab</button>
-<script>
-function setButton(id, link) {
-  const o = document.getElementById(id);
-  o.addEventListener('click', () => {
-    document.location.href = link;
-  });
-  o.removeAttribute('disabled');
-}
+  <head>
+    <title>Example SSO client</title>
+  </head>
+  <body>
+    <h1>Pick a sign in provider:</h1>
+    <button id="google" disabled>Google</button>
+    <button id="github" disabled>GitHub</button>
+    <button id="gitlab" disabled>GitLab</button>
+    <script>
+      function setButton(id, link) {
+        const o = document.getElementById(id);
+        o.addEventListener('click', () => {
+          document.location.href = link;
+        });
+        o.removeAttribute('disabled');
+      }
 
-function randomString() {
-  const array = new Uint8Array(10);
-  crypto.getRandomValues(array);
-  return [...array]
-    .map((v) => v.toString(16))
-    .map((v) => '00'.substr(v.length) + v)
-    .join('');
-}
+      function randomString() {
+        const array = new Uint8Array(10);
+        crypto.getRandomValues(array);
+        return [...array]
+          .map((v) => v.toString(16))
+          .map((v) => '00'.substr(v.length) + v)
+          .join('');
+      }
 
-const nonce = randomString();
-window.sessionStorage.setItem('login-nonce', nonce);
+      const nonce = randomString();
+      window.sessionStorage.setItem('login-nonce', nonce);
 
-const domain = document.location.origin;
-const state = JSON.stringify({ nonce, custom: 'custom state here' });
+      const domain = document.location.origin;
+      const state = JSON.stringify({ nonce, custom: 'custom state here' });
 
-function makeGoogleLink({ clientId, authUrl }) {
-  const targetUrl = new URL('/google.html', domain);
-  const url = new URL(authUrl);
-  url.searchParams.set('redirect_uri', targetUrl.toString());
-  url.searchParams.set('state', state);
-  url.searchParams.set('response_type', 'id_token');
-  url.searchParams.set('scope', 'openid');
-  url.searchParams.set('client_id', clientId);
-  url.searchParams.set('ss_domain', domain);
-  url.searchParams.set('fetch_basic_profile', 'false');
-  return url.toString();
-}
+      function makeGoogleLink({ clientId, authUrl }) {
+        const targetUrl = new URL('/google.html', domain);
+        const url = new URL(authUrl);
+        url.searchParams.set('redirect_uri', targetUrl.toString());
+        url.searchParams.set('state', state);
+        url.searchParams.set('response_type', 'id_token');
+        url.searchParams.set('scope', 'openid');
+        url.searchParams.set('client_id', clientId);
+        url.searchParams.set('ss_domain', domain);
+        url.searchParams.set('fetch_basic_profile', 'false');
+        return url.toString();
+      }
 
-function makeGitHubLink({ clientId, authUrl }) {
-  const targetUrl = new URL('/github.html', domain);
-  const url = new URL(authUrl);
-  url.searchParams.set('redirect_uri', targetUrl.toString());
-  url.searchParams.set('state', state);
-  url.searchParams.set('scope', '');
-  url.searchParams.set('client_id', clientId);
-  return url.toString();
-}
+      function makeGitHubLink({ clientId, authUrl }) {
+        const targetUrl = new URL('/github.html', domain);
+        const url = new URL(authUrl);
+        url.searchParams.set('redirect_uri', targetUrl.toString());
+        url.searchParams.set('state', state);
+        url.searchParams.set('scope', '');
+        url.searchParams.set('client_id', clientId);
+        return url.toString();
+      }
 
-function makeGitLabLink({ clientId, authUrl }) {
-  const targetUrl = new URL('/gitlab.html', domain);
-  const url = new URL(authUrl);
-  url.searchParams.set('redirect_uri', targetUrl.toString());
-  url.searchParams.set('state', state);
-  url.searchParams.set('response_type', 'token');
-  url.searchParams.set('scope', 'openid');
-  url.searchParams.set('client_id', clientId);
-  return url.toString();
-}
+      function makeGitLabLink({ clientId, authUrl }) {
+        const targetUrl = new URL('/gitlab.html', domain);
+        const url = new URL(authUrl);
+        url.searchParams.set('redirect_uri', targetUrl.toString());
+        url.searchParams.set('state', state);
+        url.searchParams.set('response_type', 'token');
+        url.searchParams.set('scope', 'openid');
+        url.searchParams.set('client_id', clientId);
+        return url.toString();
+      }
 
-fetch('/api/sso')
-  .then((res) => res.json())
-  .then((data) => {
-    data.google && setButton('google', makeGoogleLink(data.google));
-    data.github && setButton('github', makeGitHubLink(data.github));
-    data.gitlab && setButton('gitlab', makeGitLabLink(data.gitlab));
-  });
-</script>
-</body>
+      fetch('/api/sso')
+        .then((res) => res.json())
+        .then((data) => {
+          data.google && setButton('google', makeGoogleLink(data.google));
+          data.github && setButton('github', makeGitHubLink(data.github));
+          data.gitlab && setButton('gitlab', makeGitLabLink(data.gitlab));
+        });
+    </script>
+  </body>
 </html>

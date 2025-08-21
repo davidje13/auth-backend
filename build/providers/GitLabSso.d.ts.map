@@ -1,1 +1,0 @@
-{"version":3,"file":"GitLabSso.d.ts","sourceRoot":"","sources":["../../src/providers/GitLabSso.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,YAAY;IAC3B,QAAQ,EAAE,MAAM,CAAC;IACjB,OAAO,EAAE,MAAM,CAAC;IAChB,YAAY,EAAE,MAAM,CAAC;CACtB;AAED,wBAA8B,SAAS,CACrC,MAAM,EAAE,YAAY,EACpB,aAAa,EAAE,MAAM,GACpB,OAAO,CAAC,MAAM,CAAC,CAoBjB"}

@@ -1,10 +1,11 @@
 import express from 'express';
 import request from 'supertest';
-import testServerRunner, { addressToString } from './testServerRunner';
+import { testServerRunner, addressToString } from './testServerRunner';
 import { buildAuthenticationBackend } from '..';
+import 'lean-test';
 
 describe('/google', () => {
-  const mockSsoServer = testServerRunner(() => {
+  const MOCK_SSO_SERVER = testServerRunner(() => {
     const ssoApp = express();
     ssoApp.use(express.urlencoded({ extended: false }));
     ssoApp.get('/', (req, res) => {
@@ -25,72 +26,82 @@ describe('/google', () => {
     return ssoApp;
   });
 
-  const server = testServerRunner(() => {
+  const SERVER = testServerRunner(({ getTyped }) => {
     const tokenGranter = (id: string): string => `issued-${id}`;
     const config = {
       google: {
         clientId: 'my-client-id',
         authUrl: 'foo',
-        tokenInfoUrl: addressToString(mockSsoServer.address()!),
+        tokenInfoUrl: addressToString(getTyped(MOCK_SSO_SERVER).address()!),
       },
     };
 
-    return express()
-      .use('/prefix', buildAuthenticationBackend(config, tokenGranter).router);
+    return express().use(
+      '/prefix',
+      buildAuthenticationBackend(config, tokenGranter).router,
+    );
   });
 
-  it('responds with a token for valid external tokens', async () => {
-    const response = await request(server)
+  it('responds with a token for valid external tokens', async ({
+    getTyped,
+  }) => {
+    const response = await request(getTyped(SERVER))
       .post('/prefix/google')
       .send({ externalToken: 'my-successful-external-token' })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.userToken).toEqual('issued-google-my-external-id');
-    expect(response.body.error).not.toBeTruthy();
+    expect(response.body.error).not(toBeTruthy());
   });
 
-  it('responds HTTP 4xx for non-POST requests', async () => {
-    await request(server)
-      .get('/prefix/google')
-      .expect(404); // Should be 405 but this is the default and is good enough
+  it('responds HTTP 4xx for non-POST requests', async ({ getTyped }) => {
+    await request(getTyped(SERVER)).get('/prefix/google').expect(404); // Should be 405 but this is the default and is good enough
   });
 
-  it('responds HTTP Bad Request for missing external token', async () => {
-    const response = await request(server)
+  it('responds HTTP Bad Request for missing external token', async ({
+    getTyped,
+  }) => {
+    const response = await request(getTyped(SERVER))
       .post('/prefix/google')
       .send({})
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.userToken).not.toBeTruthy();
+    expect(response.body.userToken).not(toBeTruthy());
     expect(response.body.error).toEqual('no externalToken provided');
   });
 
-  it('responds HTTP Bad Request for rejected external tokens', async () => {
-    const response = await request(server)
+  it('responds HTTP Bad Request for rejected external tokens', async ({
+    getTyped,
+  }) => {
+    const response = await request(getTyped(SERVER))
       .post('/prefix/google')
       .send({ externalToken: 'my-bad-external-token' })
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.userToken).not.toBeTruthy();
+    expect(response.body.userToken).not(toBeTruthy());
     expect(response.body.error).toEqual('validation error: nope');
   });
 
-  it('responds HTTP Bad Request for audience mismatch', async () => {
-    const response = await request(server)
+  it('responds HTTP Bad Request for audience mismatch', async ({
+    getTyped,
+  }) => {
+    const response = await request(getTyped(SERVER))
       .post('/prefix/google')
       .send({ externalToken: 'my-other-external-token' })
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
-    expect(response.body.userToken).not.toBeTruthy();
+    expect(response.body.userToken).not(toBeTruthy());
     expect(response.body.error).toEqual('audience mismatch');
   });
 
-  it('responds HTTP Internal Server Error if service fails', async () => {
-    await request(server)
+  it('responds HTTP Internal Server Error if service fails', async ({
+    getTyped,
+  }) => {
+    await request(getTyped(SERVER))
       .post('/prefix/google')
       .send({ externalToken: 'derp' })
       .expect(500);

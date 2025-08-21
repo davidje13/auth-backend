@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export interface GitHubConfig {
   clientId: string;
   authUrl: string;
@@ -8,7 +6,11 @@ export interface GitHubConfig {
   userUrl: string;
 }
 
-export default async function extractId(
+interface ResponseJSON {
+  id: string;
+}
+
+export async function extractId(
   config: GitHubConfig,
   externalToken: string,
 ): Promise<string> {
@@ -38,6 +40,6 @@ export default async function extractId(
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 
-  const userResults = await userRes.json();
+  const userResults = (await userRes.json()) as ResponseJSON;
   return userResults.id;
 }

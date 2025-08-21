@@ -1,47 +1,51 @@
 import express from 'express';
 import request from 'supertest';
-import testServerRunner, { addressToString } from './testServerRunner';
+import { testServerRunner, addressToString } from './testServerRunner';
 import { buildMockSsoApp, buildAuthenticationBackend } from '..';
+import 'lean-test';
 
 describe('mock SSO integration with Google SSO', () => {
-  const mockSsoServer = testServerRunner(() => buildMockSsoApp());
+  const MOCK_SSO_SERVER = testServerRunner(() => buildMockSsoApp());
 
-  const server = testServerRunner(() => {
+  const SERVER = testServerRunner(({ getTyped }) => {
     const tokenGranter = (id: string): string => `issued-${id}`;
     const config = {
       google: {
         clientId: 'my-client-id',
         authUrl: 'foo',
-        tokenInfoUrl: `${addressToString(mockSsoServer.address()!)}/tokeninfo`,
+        tokenInfoUrl: `${addressToString(getTyped(MOCK_SSO_SERVER).address()!)}/tokeninfo`,
       },
     };
 
-    return express()
-      .use(buildAuthenticationBackend(config, tokenGranter).router);
+    return express().use(
+      buildAuthenticationBackend(config, tokenGranter).router,
+    );
   });
 
-  it('negotiates authentication successfully', async () => {
-    const response1 = await request(mockSsoServer)
+  it('negotiates authentication successfully', async ({ getTyped }) => {
+    const response1 = await request(getTyped(MOCK_SSO_SERVER))
       .post('/auth')
-      .send('redirect_uri=a&nonce=my-nonce&state=my-state&client_id=my-client-id&identifier=my-id')
+      .send(
+        'redirect_uri=a&nonce=my-nonce&state=my-state&client_id=my-client-id&identifier=my-id',
+      )
       .expect(303);
 
-    const redirectUri = response1.get('Location');
+    const redirectUri = response1.get('Location')!;
     const hashParams = new URLSearchParams(redirectUri.split('#')[1]);
     const externalToken = hashParams.get('id_token');
 
-    const response2 = await request(server)
+    const response2 = await request(getTyped(SERVER))
       .post('/google')
       .send({ externalToken });
-      // .expect(200);
+    // .expect(200);
 
     expect(response2.body.error).toBeUndefined();
     expect(response2.body.userToken).toEqual('issued-google-my-id');
   });
 
-  it('produces errors when given an invalid token', async () => {
+  it('produces errors when given an invalid token', async ({ getTyped }) => {
     // token taken from a run with different randomised keys
-    const externalToken = (
+    const externalToken =
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.' +
       'eyJhdWQiOiJteS1jbGllbnQtaWQiLCJub25jZSI6Im15LW5vbmNlIiwianRp' +
       'IjoiNmY1N2RlYzYtODc5Ni00MjM1LTllNmItMTNlOGJiNWE1YzhmIiwic3Vi' +
@@ -51,10 +55,9 @@ describe('mock SSO integration with Google SSO', () => {
       '_DHI97syb8XwxIl6A7UYzJ30Jbv6BfsLlbt31H2MfAbVOk3orcjEyTMThRhA' +
       'AHRNVV3kZbMJ_BHf-lSMCmX3mFgPavHBnA7gZlYdyjzwBSr7PGjwOck2B0yp' +
       'umT4x7Xep-wiODgX_PBdtazTfNHR4ocO4MDksUI1k1J8hhGqzlfiBIBAQcYu' +
-      'XtU0-Hcdl0dWkSPADSvMP5pIysYXCc2tisnIqP5sEQ'
-    );
+      'XtU0-Hcdl0dWkSPADSvMP5pIysYXCc2tisnIqP5sEQ';
 
-    const response = await request(server)
+    const response = await request(getTyped(SERVER))
       .post('/google')
       .send({ externalToken })
       .expect(400);
