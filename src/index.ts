@@ -12,11 +12,7 @@ interface AuthenticationBackend {
   service: AuthenticationService;
 }
 
-export type {
-  TokenGranter,
-  AuthenticationConfiguration,
-  AuthenticationClientConfiguration,
-};
+export type { TokenGranter, AuthenticationConfiguration, AuthenticationClientConfiguration };
 
 export { AuthenticationService, buildAuthenticationRouter };
 

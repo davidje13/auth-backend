@@ -10,10 +10,7 @@ interface ResponseJSON {
   id: string;
 }
 
-export async function extractId(
-  config: GitHubConfig,
-  externalToken: string,
-): Promise<string> {
+export async function extractId(config: GitHubConfig, externalToken: string): Promise<string> {
   const accessParams = new URLSearchParams();
   accessParams.append('code', externalToken);
   accessParams.append('client_id', config.clientId);

@@ -17,26 +17,20 @@ describe('mock SSO integration with Google SSO', () => {
       },
     };
 
-    return express().use(
-      buildAuthenticationBackend(config, tokenGranter).router,
-    );
+    return express().use(buildAuthenticationBackend(config, tokenGranter).router);
   });
 
   it('negotiates authentication successfully', async ({ getTyped }) => {
     const response1 = await request(getTyped(MOCK_SSO_SERVER))
       .post('/auth')
-      .send(
-        'redirect_uri=a&nonce=my-nonce&state=my-state&client_id=my-client-id&identifier=my-id',
-      )
+      .send('redirect_uri=a&nonce=my-nonce&state=my-state&client_id=my-client-id&identifier=my-id')
       .expect(303);
 
     const redirectUri = response1.get('Location')!;
     const hashParams = new URLSearchParams(redirectUri.split('#')[1]);
     const externalToken = hashParams.get('id_token');
 
-    const response2 = await request(getTyped(SERVER))
-      .post('/google')
-      .send({ externalToken });
+    const response2 = await request(getTyped(SERVER)).post('/google').send({ externalToken });
     // .expect(200);
 
     expect(response2.body.error).toBeUndefined();

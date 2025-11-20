@@ -21,14 +21,10 @@ export function testServerRunner(
     const app = await serverFn(opts);
     let server: Server;
     await new Promise<void>((resolve, reject) => {
-      server = app.listen(0, '127.0.0.1', (err) =>
-        err ? reject(err) : resolve(),
-      );
+      server = app.listen(0, '127.0.0.1', (err) => (err ? reject(err) : resolve()));
     });
     opts.setParameter(server!);
     return () =>
-      new Promise((resolve, reject) =>
-        server.close((err) => (err ? reject(err) : resolve())),
-      );
+      new Promise((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
   });
 }

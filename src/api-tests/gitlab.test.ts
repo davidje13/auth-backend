@@ -41,15 +41,10 @@ describe('/gitlab', () => {
       },
     };
 
-    return express().use(
-      '/prefix',
-      buildAuthenticationBackend(config, tokenGranter).router,
-    );
+    return express().use('/prefix', buildAuthenticationBackend(config, tokenGranter).router);
   });
 
-  it('responds with a token for valid external tokens', async ({
-    getTyped,
-  }) => {
+  it('responds with a token for valid external tokens', async ({ getTyped }) => {
     const response = await request(getTyped(SERVER))
       .post('/prefix/gitlab')
       .send({ externalToken: 'my-successful-external-token' })
@@ -64,9 +59,7 @@ describe('/gitlab', () => {
     await request(getTyped(SERVER)).get('/prefix/gitlab').expect(404); // Should be 405 but this is the default and is good enough
   });
 
-  it('responds HTTP Bad Request for missing external token', async ({
-    getTyped,
-  }) => {
+  it('responds HTTP Bad Request for missing external token', async ({ getTyped }) => {
     const response = await request(getTyped(SERVER))
       .post('/prefix/gitlab')
       .send({})
@@ -77,9 +70,7 @@ describe('/gitlab', () => {
     expect(response.body.error).toEqual('no externalToken provided');
   });
 
-  it('responds HTTP Bad Request for rejected external tokens', async ({
-    getTyped,
-  }) => {
+  it('responds HTTP Bad Request for rejected external tokens', async ({ getTyped }) => {
     const response = await request(getTyped(SERVER))
       .post('/prefix/gitlab')
       .send({ externalToken: 'my-bad-external-token' })
@@ -90,9 +81,7 @@ describe('/gitlab', () => {
     expect(response.body.error).toEqual('validation error: nope');
   });
 
-  it('responds HTTP Bad Request for audience mismatch', async ({
-    getTyped,
-  }) => {
+  it('responds HTTP Bad Request for audience mismatch', async ({ getTyped }) => {
     const response = await request(getTyped(SERVER))
       .post('/prefix/gitlab')
       .send({ externalToken: 'my-other-external-token' })
@@ -103,9 +92,7 @@ describe('/gitlab', () => {
     expect(response.body.error).toEqual('audience mismatch');
   });
 
-  it('responds HTTP Internal Server Error if service fails', async ({
-    getTyped,
-  }) => {
+  it('responds HTTP Internal Server Error if service fails', async ({ getTyped }) => {
     await request(getTyped(SERVER))
       .post('/prefix/gitlab')
       .send({ externalToken: 'derp' })

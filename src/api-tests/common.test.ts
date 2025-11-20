@@ -15,10 +15,7 @@ describe('/', () => {
   const SERVER = testServerRunner(() => {
     const config = { google: GOOGLE_CONFIG };
 
-    return express().use(
-      '/prefix',
-      buildAuthenticationBackend(config, tokenGranter).router,
-    );
+    return express().use('/prefix', buildAuthenticationBackend(config, tokenGranter).router);
   });
 
   it('responds with client-visible configuration', async ({ getTyped }) => {
@@ -45,19 +42,14 @@ describe('/service', () => {
   const SERVER = testServerRunner(() => {
     const config = {};
 
-    return express().use(
-      '/prefix',
-      buildAuthenticationBackend(config, tokenGranter).router,
-    );
+    return express().use('/prefix', buildAuthenticationBackend(config, tokenGranter).router);
   });
 
   it('responds HTTP Not Found for unknown services', async ({ getTyped }) => {
     await request(getTyped(SERVER)).post('/prefix/nope').expect(404);
   });
 
-  it('responds HTTP Not Found for unconfigured services', async ({
-    getTyped,
-  }) => {
+  it('responds HTTP Not Found for unconfigured services', async ({ getTyped }) => {
     await request(getTyped(SERVER)).post('/prefix/google').expect(404);
   });
 });

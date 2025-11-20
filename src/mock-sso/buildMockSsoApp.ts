@@ -20,13 +20,7 @@ export function buildMockSsoApp(): Express {
   });
 
   app.post('/auth', express.urlencoded({ extended: false }), (req, res) => {
-    const {
-      redirect_uri: redirectUri,
-      nonce,
-      state,
-      client_id: clientId,
-      identifier,
-    } = req.body;
+    const { redirect_uri: redirectUri, nonce, state, client_id: clientId, identifier } = req.body;
 
     if (!redirectUri || !clientId || !identifier) {
       res.status(400).json({ error: 'missing fields' });

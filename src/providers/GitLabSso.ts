@@ -10,10 +10,7 @@ interface ResponseJSON {
   resource_owner_id: string;
 }
 
-export async function extractId(
-  config: GitLabConfig,
-  externalToken: string,
-): Promise<string> {
+export async function extractId(config: GitLabConfig, externalToken: string): Promise<string> {
   const res = await fetch(config.tokenInfoUrl, {
     method: 'GET',
     headers: { Authorization: `Bearer ${externalToken}` },

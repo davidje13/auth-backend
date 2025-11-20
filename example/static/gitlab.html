@@ -23,9 +23,7 @@
       document.getElementById('token').innerText = externalToken;
       document.getElementById('state').innerText = state;
 
-      if (
-        JSON.parse(state).nonce !== window.sessionStorage.getItem('login-nonce')
-      ) {
+      if (JSON.parse(state).nonce !== window.sessionStorage.getItem('login-nonce')) {
         document.getElementById('result').innerText = `nonce mismatch!`;
       } else {
         fetch('api/sso/gitlab', {
@@ -34,8 +32,7 @@
           body: JSON.stringify({ externalToken }),
         }).then((res) =>
           res.text().then((data) => {
-            document.getElementById('result').innerText =
-              `${res.status}: ${data}`;
+            document.getElementById('result').innerText = `${res.status}: ${data}`;
           }),
         );
       }

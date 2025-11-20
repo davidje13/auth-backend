@@ -13,18 +13,10 @@ describe('mock SSO', () => {
         .get('/auth?redirect_uri=abc&nonce=def&state=ghi&client_id=jkl')
         .expect(200);
 
-      expect(text).toContain(
-        '<input type="hidden" name="redirect_uri" value="abc" />',
-      );
-      expect(text).toContain(
-        '<input type="hidden" name="nonce" value="def" />',
-      );
-      expect(text).toContain(
-        '<input type="hidden" name="state" value="ghi" />',
-      );
-      expect(text).toContain(
-        '<input type="hidden" name="client_id" value="jkl" />',
-      );
+      expect(text).toContain('<input type="hidden" name="redirect_uri" value="abc" />');
+      expect(text).toContain('<input type="hidden" name="nonce" value="def" />');
+      expect(text).toContain('<input type="hidden" name="state" value="ghi" />');
+      expect(text).toContain('<input type="hidden" name="client_id" value="jkl" />');
     });
 
     it('escapes reflected values', async ({ getTyped }) => {
@@ -32,9 +24,7 @@ describe('mock SSO', () => {
         .get('/auth?redirect_uri=a"c&nonce=d&state=e&client_id=f')
         .expect(200);
 
-      expect(text).toContain(
-        '<input type="hidden" name="redirect_uri" value="a&quot;c" />',
-      );
+      expect(text).toContain('<input type="hidden" name="redirect_uri" value="a&quot;c" />');
     });
   });
 
@@ -42,9 +32,7 @@ describe('mock SSO', () => {
     it('redirects to the requested URI', async ({ getTyped }) => {
       const response = await request(getTyped(SERVER))
         .post('/auth')
-        .send(
-          'redirect_uri=my-redirect&nonce=b&state=c&client_id=d&identifier=e',
-        )
+        .send('redirect_uri=my-redirect&nonce=b&state=c&client_id=d&identifier=e')
         .expect(303);
 
       const redirectUri = response.get('Location');
@@ -68,9 +56,7 @@ describe('mock SSO', () => {
 
       const response = await request(getTyped(SERVER))
         .post('/auth')
-        .send(
-          'redirect_uri=a&nonce=my-nonce&state=c&client_id=my-client&identifier=my-id',
-        )
+        .send('redirect_uri=a&nonce=my-nonce&state=c&client_id=my-client&identifier=my-id')
         .expect(303);
 
       const redirectUri = response.get('Location')!;

@@ -10,10 +10,7 @@ interface ResponseJSON {
   sub: string;
 }
 
-export async function extractId(
-  config: GoogleConfig,
-  externalToken: string,
-): Promise<string> {
+export async function extractId(config: GoogleConfig, externalToken: string): Promise<string> {
   // These checks can be done locally
   // see https://developers.google.com/identity/sign-in/web/backend-auth
 

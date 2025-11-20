@@ -1,20 +1,8 @@
-import {
-  extractId as extractGoogleId,
-  GoogleConfig,
-} from './providers/GoogleSso';
-import {
-  extractId as extractGitHubId,
-  GitHubConfig,
-} from './providers/GitHubSso';
-import {
-  extractId as extractGitLabId,
-  GitLabConfig,
-} from './providers/GitLabSso';
+import { extractId as extractGoogleId, GoogleConfig } from './providers/GoogleSso';
+import { extractId as extractGitHubId, GitHubConfig } from './providers/GitHubSso';
+import { extractId as extractGitLabId, GitLabConfig } from './providers/GitLabSso';
 
-type UnconfiguredExtractor<T> = (
-  config: T,
-  externalToken: string,
-) => Promise<string>;
+type UnconfiguredExtractor<T> = (config: T, externalToken: string) => Promise<string>;
 type ConfiguredExtractor = (externalToken: string) => Promise<string>;
 
 interface ClientProperties {
@@ -28,10 +16,7 @@ export interface AuthenticationConfiguration {
   gitlab: GitLabConfig;
 }
 
-export type AuthenticationClientConfiguration = Record<
-  string,
-  ClientProperties
->;
+export type AuthenticationClientConfiguration = Record<string, ClientProperties>;
 
 export class AuthenticationService {
   public readonly clientConfig: AuthenticationClientConfiguration = {};

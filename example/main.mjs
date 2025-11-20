@@ -19,8 +19,7 @@ const config = {
   },
   gitlab: {
     // Auth Backend Local Testing - http://localhost:8080/gitlab.html, no scopes
-    clientId:
-      '0f048a5b0edc29ff7b2697f827805b207f68f63db94507cfd9db57e4ac0f3531',
+    clientId: '0f048a5b0edc29ff7b2697f827805b207f68f63db94507cfd9db57e4ac0f3531',
     authUrl: 'https://gitlab.com/oauth/authorize',
     tokenInfoUrl: 'https://gitlab.com/oauth/token/info',
   },
