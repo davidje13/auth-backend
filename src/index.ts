@@ -1,4 +1,4 @@
-import type express from 'express';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import {
   AuthenticationService,
   AuthenticationConfiguration,
@@ -8,7 +8,7 @@ import { type TokenGranter, buildAuthenticationRouter } from './router';
 export { buildMockSsoApp } from './mock-sso/buildMockSsoApp';
 
 interface AuthenticationBackend {
-  router: express.Router;
+  router: (basePath?: string) => (req: IncomingMessage, res: ServerResponse) => void;
   service: AuthenticationService;
 }
 

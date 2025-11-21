@@ -1,29 +1,26 @@
-import express from 'express';
+import { createServer } from 'node:http';
 import request from 'supertest';
-import { testServerRunner, addressToString } from './testServerRunner';
+import { getAddressURL, getQuery, HTTPError, Router, sendJSON, WebListener } from 'web-listener';
+import { testServerRunner } from './testServerRunner';
 import { buildAuthenticationBackend } from '..';
 import 'lean-test';
 
 describe('/google', () => {
   const MOCK_SSO_SERVER = testServerRunner(() => {
-    const ssoApp = express();
-    ssoApp.use(express.urlencoded({ extended: false }));
-    ssoApp.get('/', (req, res) => {
-      switch (req.query.id_token) {
+    const router = new Router();
+    router.get('/', (req, res) => {
+      switch (getQuery(req, 'id_token')) {
         case 'my-successful-external-token':
-          res.json({ aud: 'my-client-id', sub: 'my-external-id' });
-          return;
+          return sendJSON(res, { aud: 'my-client-id', sub: 'my-external-id' });
         case 'my-bad-external-token':
-          res.json({ error: 'nope' });
-          return;
+          return sendJSON(res, { error: 'nope' });
         case 'my-other-external-token':
-          res.json({ aud: 'another-client-id', sub: 'my-external-id' });
-          return;
+          return sendJSON(res, { aud: 'another-client-id', sub: 'my-external-id' });
         default:
-          res.status(500).end();
+          throw new HTTPError(500, { body: 'unknown id_token' });
       }
     });
-    return ssoApp;
+    return new WebListener(router);
   });
 
   const SERVER = testServerRunner(({ getTyped }) => {
@@ -32,11 +29,11 @@ describe('/google', () => {
       google: {
         clientId: 'my-client-id',
         authUrl: 'foo',
-        tokenInfoUrl: addressToString(getTyped(MOCK_SSO_SERVER).address()!),
+        tokenInfoUrl: getAddressURL(getTyped(MOCK_SSO_SERVER).address()),
       },
     };
 
-    return express().use('/prefix', buildAuthenticationBackend(config, tokenGranter).router);
+    return createServer(buildAuthenticationBackend(config, tokenGranter).router('/prefix'));
   });
 
   it('responds with a token for valid external tokens', async ({ getTyped }) => {
@@ -51,7 +48,7 @@ describe('/google', () => {
   });
 
   it('responds HTTP 4xx for non-POST requests', async ({ getTyped }) => {
-    await request(getTyped(SERVER)).get('/prefix/google').expect(404); // Should be 405 but this is the default and is good enough
+    await request(getTyped(SERVER)).get('/prefix/google').expect(405);
   });
 
   it('responds HTTP Bad Request for missing external token', async ({ getTyped }) => {
@@ -62,7 +59,7 @@ describe('/google', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.userToken).not(toBeTruthy());
-    expect(response.body.error).toEqual('no externalToken provided');
+    expect(response.body.error).toEqual('no externalToken');
   });
 
   it('responds HTTP Bad Request for rejected external tokens', async ({ getTyped }) => {

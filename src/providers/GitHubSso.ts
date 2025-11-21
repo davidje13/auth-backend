@@ -1,3 +1,5 @@
+import type { Details } from './types';
+
 export interface GitHubConfig {
   clientId: string;
   authUrl: string;
@@ -10,9 +12,11 @@ interface ResponseJSON {
   id: string;
 }
 
-export async function extractId(config: GitHubConfig, externalToken: string): Promise<string> {
+// https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
+
+export async function extractId(config: GitHubConfig, details: Details): Promise<string> {
   const accessParams = new URLSearchParams();
-  accessParams.append('code', externalToken);
+  accessParams.append('code', details.externalToken);
   accessParams.append('client_id', config.clientId);
   accessParams.append('client_secret', config.clientSecret);
   const accessRes = await fetch(config.accessTokenUrl, {

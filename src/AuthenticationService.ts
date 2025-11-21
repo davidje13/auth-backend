@@ -1,9 +1,9 @@
 import { extractId as extractGoogleId, GoogleConfig } from './providers/GoogleSso';
 import { extractId as extractGitHubId, GitHubConfig } from './providers/GitHubSso';
 import { extractId as extractGitLabId, GitLabConfig } from './providers/GitLabSso';
+import type { Details, Extractor } from './providers/types';
 
-type UnconfiguredExtractor<T> = (config: T, externalToken: string) => Promise<string>;
-type ConfiguredExtractor = (externalToken: string) => Promise<string>;
+type ConfiguredExtractor = (details: Details) => Promise<string>;
 
 interface ClientProperties {
   authUrl: string;
@@ -33,20 +33,24 @@ export class AuthenticationService {
     return this._extractors.has(service);
   }
 
-  public extractId(service: string, externalToken: string): Promise<string> {
+  public supportedServices(): string[] {
+    return [...this._extractors.keys()];
+  }
+
+  public extractId(service: string, details: Details): Promise<string> {
     const extractor = this._extractors.get(service);
 
     if (!extractor) {
       throw new Error(`Login integration with ${service} is not supported`);
     }
 
-    return extractor(externalToken);
+    return extractor(details);
   }
 
   private _bindExtractor<Service extends keyof AuthenticationConfiguration>(
     configs: Partial<AuthenticationConfiguration>,
     service: Service,
-    extractor: UnconfiguredExtractor<AuthenticationConfiguration[Service]>,
+    extractor: Extractor<AuthenticationConfiguration[Service]>,
   ): void {
     const config = configs[service];
     if (config?.clientId) {

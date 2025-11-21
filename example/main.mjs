@@ -1,39 +1,57 @@
 import { join, dirname } from 'node:path';
-import express from 'express';
-import { buildAuthenticationBackend } from '../build';
+import { fileServer, getAddressURL, Router, WebListener } from 'web-listener';
+import { buildAuthenticationBackend, buildMockSsoApp } from '../build/index.mjs';
 
 const BASEDIR = dirname(new URL(import.meta.url).pathname);
+const PORT = Number.parseInt(process.env['PORT'] ?? '8080');
 
 const config = {
   google: {
-    clientId: process.env.GOOGLE_CLIENT,
+    clientId:
+      process.env['GOOGLE_CLIENT'] ??
+      // Refacto Local Testing - http://localhost:8080/google.html, no scopes
+      '199202234207-la0v05druske1f1qoimg3sgkpua2nvc7.apps.googleusercontent.com',
     authUrl: 'https://accounts.google.com/o/oauth2/auth',
     tokenInfoUrl: 'https://oauth2.googleapis.com/tokeninfo',
   },
   github: {
-    clientId: process.env.GITHUB_CLIENT,
-    clientSecret: process.env.GITHUB_SECRET,
+    clientId: process.env['GITHUB_CLIENT'],
+    clientSecret: process.env['GITHUB_SECRET'],
     authUrl: 'https://github.com/login/oauth/authorize',
     accessTokenUrl: 'https://github.com/login/oauth/access_token',
     userUrl: 'https://api.github.com/user',
   },
   gitlab: {
-    // Auth Backend Local Testing - http://localhost:8080/gitlab.html, no scopes
-    clientId: '0f048a5b0edc29ff7b2697f827805b207f68f63db94507cfd9db57e4ac0f3531',
+    clientId:
+      process.env['GITLAB_CLIENT'] ??
+      // Auth Backend Local Testing - http://localhost:8080/gitlab.html, 'email' scope
+      '0f048a5b0edc29ff7b2697f827805b207f68f63db94507cfd9db57e4ac0f3531',
     authUrl: 'https://gitlab.com/oauth/authorize',
+    accessTokenUrl: 'https://gitlab.com/oauth/token',
     tokenInfoUrl: 'https://gitlab.com/oauth/token/info',
   },
 };
+
+if (config.google.clientId === 'mock') {
+  const mockServer = buildMockSsoApp();
+  await new Promise((resolve) => mockServer.listen(0, 'localhost', resolve));
+  const mockURL = getAddressURL(mockServer.address());
+  config.google = {
+    clientId: 'mock',
+    authUrl: `${mockURL}/auth`,
+    tokenInfoUrl: `${mockURL}/tokeninfo`,
+  };
+}
 
 function tokenGranter(userId, service, externalId) {
   return `a token for ${userId} (${service} ${externalId})`;
 }
 
 const auth = buildAuthenticationBackend(config, tokenGranter);
-express()
-  .use('/api/sso', auth.router)
-  .use(express.static(join(BASEDIR, 'static')))
-  .listen(8080, '127.0.0.1', () => {
-    process.stdout.write('Available at http://127.0.0.1:8080/\n');
-    process.stdout.write('Press Ctrl+C to stop\n');
-  });
+const listener = new WebListener(
+  new Router().mount('/api/sso', auth.router()).use(await fileServer(join(BASEDIR, 'static'))),
+);
+listener.listen(PORT, 'localhost').then(() => {
+  process.stdout.write(`Available at http://localhost:${PORT}/\n`);
+  process.stdout.write('Press Ctrl+C to stop\n');
+});

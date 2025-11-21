@@ -15,21 +15,26 @@
     </dl>
     <a href="/">Back</a>
     <script>
-      const hashParams = new URLSearchParams(document.location.hash.substr(1));
+      const searchParams = new URLSearchParams(document.location.search.substr(1));
 
-      const externalToken = hashParams.get('access_token');
-      const state = hashParams.get('state');
+      const externalToken = searchParams.get('code');
+      const state = searchParams.get('state');
 
       document.getElementById('token').innerText = externalToken;
       document.getElementById('state').innerText = state;
 
-      if (JSON.parse(state).nonce !== window.sessionStorage.getItem('login-nonce')) {
+      const loginState = JSON.parse(window.sessionStorage.getItem('login-state'));
+      if (JSON.parse(state).nonce !== loginState.nonce) {
         document.getElementById('result').innerText = `nonce mismatch!`;
       } else {
         fetch('api/sso/gitlab', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ externalToken }),
+          body: JSON.stringify({
+            externalToken,
+            redirectUri: document.location.href.split('?')[0],
+            codeVerifier: loginState.codeVerifier,
+          }),
         }).then((res) =>
           res.text().then((data) => {
             document.getElementById('result').innerText = `${res.status}: ${data}`;

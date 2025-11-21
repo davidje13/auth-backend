@@ -1,30 +1,24 @@
 import type { Server } from 'node:http';
-import type { AddressInfo } from 'node:net';
-import type express from 'express';
 import type { TypedParameter, TypedParameters } from 'lean-test';
+import { WebListener } from 'web-listener';
 
 type MaybePromise<T> = Promise<T> | T;
 
-export function addressToString(addr: AddressInfo | string): string {
-  if (typeof addr === 'string') {
-    return addr;
-  }
-  const { address, family, port } = addr;
-  const host = family === 'IPv6' ? `[${address}]` : address;
-  return `http://${host}:${port}`;
-}
+// TODO: supertest fails with IPv6 addresses, so we force 127.0.0.1 instead of localhost
 
 export function testServerRunner(
-  serverFn: (opts: TypedParameters) => MaybePromise<express.Express>,
+  serverFn: (opts: TypedParameters) => MaybePromise<WebListener | Server>,
 ): TypedParameter<Server> {
   return beforeEach<Server>(async (opts) => {
     const app = await serverFn(opts);
-    let server: Server;
-    await new Promise<void>((resolve, reject) => {
-      server = app.listen(0, '127.0.0.1', (err) => (err ? reject(err) : resolve()));
-    });
-    opts.setParameter(server!);
+    if (app instanceof WebListener) {
+      const server = await app.listen(0, '127.0.0.1');
+      opts.setParameter(server);
+      return () => server.closeWithTimeout('end of test', 0);
+    }
+    await new Promise<void>((resolve) => app.listen(0, '127.0.0.1', resolve));
+    opts.setParameter(app);
     return () =>
-      new Promise((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
+      new Promise((resolve, reject) => app.close((err) => (err ? reject(err) : resolve())));
   });
 }

@@ -7,11 +7,10 @@ function htmlSafe(value?: unknown): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/"/g, '&quot;');
 }
 
-export const loginPage = (query: Record<string, unknown>): string => `
+export const loginPage = (query: URLSearchParams): string => `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -62,10 +61,10 @@ export const loginPage = (query: Record<string, unknown>): string => `
       <p>
         This is a mock implementation of an OAuth server for testing purposes.
       </p>
-      <input type="hidden" name="redirect_uri" value="${htmlSafe(query.redirect_uri)}" />
-      <input type="hidden" name="nonce" value="${htmlSafe(query.nonce)}" />
-      <input type="hidden" name="state" value="${htmlSafe(query.state)}" />
-      <input type="hidden" name="client_id" value="${htmlSafe(query.client_id)}" />
+      <input type="hidden" name="redirect_uri" value="${htmlSafe(query.get('redirect_uri'))}" />
+      <input type="hidden" name="nonce" value="${htmlSafe(query.get('nonce'))}" />
+      <input type="hidden" name="state" value="${htmlSafe(query.get('state'))}" />
+      <input type="hidden" name="client_id" value="${htmlSafe(query.get('client_id'))}" />
       <label>Sign in as <input type="text" name="identifier" required autofocus /></label><button>Sign in</button>
     </form>
   </body>

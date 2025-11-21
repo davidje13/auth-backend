@@ -1,3 +1,5 @@
+import type { Details } from './types';
+
 export interface GoogleConfig {
   clientId: string;
   authUrl: string;
@@ -10,12 +12,12 @@ interface ResponseJSON {
   sub: string;
 }
 
-export async function extractId(config: GoogleConfig, externalToken: string): Promise<string> {
+export async function extractId(config: GoogleConfig, details: Details): Promise<string> {
   // These checks can be done locally
   // see https://developers.google.com/identity/sign-in/web/backend-auth
 
   const params = new URLSearchParams();
-  params.append('id_token', externalToken);
+  params.append('id_token', details.externalToken);
   // POST does not work (despite being listed in Google's docs)
   const res = await fetch(`${config.tokenInfoUrl}?${params.toString()}`);
 

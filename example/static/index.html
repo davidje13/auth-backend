@@ -8,6 +8,14 @@
     <button id="google" disabled>Google</button>
     <button id="github" disabled>GitHub</button>
     <button id="gitlab" disabled>GitLab</button>
+    <p>
+      Configure providers by setting environment variables when starting this demo. For example:
+    </p>
+    <pre><code>GOOGLE_CLIENT=my-google-client \
+GITHUB_CLIENT=my-github-client \
+GITHUB_SECRET=my-github-secret \
+GITLAB_CLIENT=my-gitlab-client \
+npm start</code></pre>
     <script>
       function setButton(id, link) {
         const o = document.getElementById(id);
@@ -17,17 +25,27 @@
         o.removeAttribute('disabled');
       }
 
-      function randomString() {
-        const array = new Uint8Array(10);
+      const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_';
+      function randomString(length) {
+        const array = new Uint8Array(length);
         crypto.getRandomValues(array);
-        return [...array]
-          .map((v) => v.toString(16))
-          .map((v) => '00'.substr(v.length) + v)
-          .join('');
+        return [...array].map((v) => CHARS[v & 63]).join('');
+      }
+      function b64(buffer) {
+        const arr = new Uint8Array(buffer);
+        if (arr.toBase64) {
+          return arr.toBase64({ alphabet: 'base64url', omitPadding: true });
+        } else {
+          // fallback toBase64 for old browsers
+          return btoa(String.fromCharCode(...arr))
+            .replaceAll('+', '-')
+            .replaceAll('/', '_')
+            .replaceAll('=', '');
+        }
       }
 
-      const nonce = randomString();
-      window.sessionStorage.setItem('login-nonce', nonce);
+      const nonce = randomString(20);
+      const codeVerifier = randomString(48);
 
       const domain = document.location.origin;
       const state = JSON.stringify({ nonce, custom: 'custom state here' });
@@ -55,24 +73,30 @@
         return url.toString();
       }
 
-      function makeGitLabLink({ clientId, authUrl }) {
+      function makeGitLabLink({ clientId, authUrl }, codeChallenge) {
         const targetUrl = new URL('/gitlab.html', domain);
         const url = new URL(authUrl);
         url.searchParams.set('redirect_uri', targetUrl.toString());
         url.searchParams.set('state', state);
-        url.searchParams.set('response_type', 'token');
-        url.searchParams.set('scope', 'openid');
+        url.searchParams.set('response_type', 'code');
+        url.searchParams.set('code_challenge', codeChallenge);
+        url.searchParams.set('code_challenge_method', 'S256');
+        url.searchParams.set('scope', 'email'); // not possible to request no scopes (causes an error, or grants all scopes (!) if the app has not been configured with restrictions)
         url.searchParams.set('client_id', clientId);
         return url.toString();
       }
 
-      fetch('/api/sso')
-        .then((res) => res.json())
-        .then((data) => {
-          data.google && setButton('google', makeGoogleLink(data.google));
-          data.github && setButton('github', makeGitHubLink(data.github));
-          data.gitlab && setButton('gitlab', makeGitLabLink(data.gitlab));
-        });
+      (async () => {
+        const [data, codeChallengeBytes] = await Promise.all([
+          fetch('/api/sso').then((res) => res.json()),
+          crypto.subtle.digest('SHA-256', new TextEncoder().encode(codeVerifier)),
+        ]);
+        const codeChallenge = b64(codeChallengeBytes);
+        window.sessionStorage.setItem('login-state', JSON.stringify({ nonce, codeVerifier }));
+        data.google && setButton('google', makeGoogleLink(data.google));
+        data.github && setButton('github', makeGitHubLink(data.github));
+        data.gitlab && setButton('gitlab', makeGitLabLink(data.gitlab, codeChallenge));
+      })();
     </script>
   </body>
 </html>

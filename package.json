@@ -9,7 +9,7 @@
   "types": "build/index.d.ts",
   "scripts": {
     "build": "rm -r build || true; rollup --config rollup.config.mjs && rm -r build/types",
-    "start": "npm run build && node example/main.js",
+    "start": "npm run build && node example/main.mjs",
     "format": "prettier --write .",
     "test": "tsc && prettier --check . && lean-test --preprocess=tsc --parallel"
   },
@@ -29,21 +29,17 @@
   "dependencies": {
     "jwt-simple": "^0.5.6"
   },
-  "peerDependencies": {
-    "express": "5.x"
-  },
   "devDependencies": {
     "@rollup/plugin-terser": "0.4.x",
     "@rollup/plugin-typescript": "12.x",
-    "@types/express": "5.x",
     "@types/node": "24.x",
     "@types/supertest": "6.x",
-    "express": "5.x",
     "lean-test": "2.x",
     "prettier": "3.6.2",
     "rollup": "4.x",
     "rollup-plugin-dts": "6.x",
     "supertest": "7.x",
-    "typescript": "5.9.x"
+    "typescript": "5.9.x",
+    "web-listener": "0.11.0"
   }
 }

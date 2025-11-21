@@ -20,6 +20,7 @@ describe('AuthenticationService', () => {
         gitlab: {
           clientId: 'gitlab-client-id',
           authUrl: 'gitlab-auth-url',
+          accessTokenUrl: 'gitlab-access-token-url',
           tokenInfoUrl: 'gitlab-token-info-url',
         },
       });

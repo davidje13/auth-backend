@@ -1,4 +1,10 @@
-import express, { Express } from 'express';
+import { IncomingMessage, ServerResponse, Server } from 'node:http';
+
+interface Details {
+    externalToken: string;
+    redirectUri?: string;
+    codeVerifier?: string;
+}
 
 interface GoogleConfig {
     clientId: string;
@@ -17,6 +23,7 @@ interface GitHubConfig {
 interface GitLabConfig {
     clientId: string;
     authUrl: string;
+    accessTokenUrl: string;
     tokenInfoUrl: string;
 }
 
@@ -35,17 +42,18 @@ declare class AuthenticationService {
     private readonly _extractors;
     constructor(configs: Partial<AuthenticationConfiguration>);
     supportsService(service: string): boolean;
-    extractId(service: string, externalToken: string): Promise<string>;
+    supportedServices(): string[];
+    extractId(service: string, details: Details): Promise<string>;
     private _bindExtractor;
 }
 
 type TokenGranter = (userId: string, service: string, externalId: string) => string;
-declare function buildAuthenticationRouter(authenticationService: AuthenticationService, tokenGranter: TokenGranter): express.Router;
+declare function buildAuthenticationRouter(authenticationService: AuthenticationService, tokenGranter: TokenGranter): (basePath?: string) => (req: IncomingMessage, res: ServerResponse) => void;
 
-declare function buildMockSsoApp(): Express;
+declare function buildMockSsoApp(): Server;
 
 interface AuthenticationBackend {
-    router: express.Router;
+    router: (basePath?: string) => (req: IncomingMessage, res: ServerResponse) => void;
     service: AuthenticationService;
 }
 

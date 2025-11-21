@@ -23,7 +23,8 @@
       document.getElementById('token').innerText = externalToken;
       document.getElementById('state').innerText = state;
 
-      if (JSON.parse(state).nonce !== window.sessionStorage.getItem('login-nonce')) {
+      const loginState = JSON.parse(window.sessionStorage.getItem('login-state'));
+      if (JSON.parse(state).nonce !== loginState.nonce) {
         document.getElementById('result').innerText = `nonce mismatch!`;
       } else {
         fetch('api/sso/google', {
