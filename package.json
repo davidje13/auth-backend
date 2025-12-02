@@ -26,9 +26,6 @@
     "url": "https://github.com/davidje13/auth-backend/issues"
   },
   "homepage": "https://github.com/davidje13/auth-backend#readme",
-  "dependencies": {
-    "jwt-simple": "^0.5.6"
-  },
   "devDependencies": {
     "@rollup/plugin-terser": "0.4.x",
     "@rollup/plugin-typescript": "12.x",
@@ -40,6 +37,6 @@
     "rollup-plugin-dts": "6.x",
     "supertest": "7.x",
     "typescript": "5.9.x",
-    "web-listener": "0.11.0"
+    "web-listener": "0.13.2"
   }
 }

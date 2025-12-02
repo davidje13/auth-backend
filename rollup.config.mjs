@@ -6,7 +6,7 @@ export default [
   {
     input: 'src/index.ts',
     output: [{ file: 'build/index.mjs', format: 'esm' }],
-    external: [/node:.*/, 'jwt-simple'],
+    external: [/node:.*/],
     plugins: [
       typescript({
         compilerOptions: {
@@ -28,7 +28,7 @@ export default [
   {
     input: './build/types/src/index.d.ts',
     output: [{ file: 'build/index.d.ts', format: 'esm' }],
-    external: [/node:.*/, 'jwt-simple'],
+    external: [/node:.*/],
     plugins: [dts()],
   },
 ];

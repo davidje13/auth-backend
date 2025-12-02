@@ -5,6 +5,21 @@ import {
   AuthenticationClientConfiguration,
 } from './AuthenticationService';
 import { type TokenGranter, buildAuthenticationRouter } from './router';
+export { encodeJWT, decodeJWT, type DecodeOptions } from './jwt/jwt';
+export {
+  NONE,
+  HS256,
+  HS384,
+  HS512,
+  RS256,
+  RS384,
+  RS512,
+  loadJWKSVerifiers,
+  makeRandomRS256,
+  type Signer,
+  type Verifier,
+  type SignerVerifier,
+} from './jwt/algorithms';
 export { buildMockSsoApp } from './mock-sso/buildMockSsoApp';
 
 interface AuthenticationBackend {
@@ -23,8 +38,5 @@ export function buildAuthenticationBackend(
   const service = new AuthenticationService(configs);
   const router = buildAuthenticationRouter(service, tokenGranter);
 
-  return {
-    router,
-    service,
-  };
+  return { router, service };
 }

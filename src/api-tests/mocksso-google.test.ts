@@ -15,7 +15,7 @@ describe('mock SSO integration with Google SSO', () => {
       google: {
         clientId: 'my-client-id',
         authUrl: 'foo',
-        tokenInfoUrl: `${getAddressURL(getTyped(MOCK_SSO_SERVER).address())}/tokeninfo`,
+        certsUrl: `${getAddressURL(getTyped(MOCK_SSO_SERVER).address())}/certs`,
       },
     };
 
@@ -58,6 +58,6 @@ describe('mock SSO integration with Google SSO', () => {
       .send({ externalToken })
       .expect(400);
 
-    expect(response2.body.error).toEqual('validation error: validation failure');
+    expect(response2.body.error).toEqual('signature mismatch');
   });
 });

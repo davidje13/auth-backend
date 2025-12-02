@@ -33,7 +33,7 @@ const config = {
   google: {
     clientId: 'my-google-client-id',
     authUrl: 'https://accounts.google.com/o/oauth2/auth',
-    tokenInfoUrl: 'https://oauth2.googleapis.com/tokeninfo',
+    certsUrl: 'https://www.googleapis.com/oauth2/v3/certs',
   },
   github: {
     clientId: 'my-github-client-id',
@@ -82,7 +82,7 @@ const config =
   google: {
     clientId: 'my-google-client-id',
     authUrl: 'http://localhost:9000/auth',
-    tokenInfoUrl: 'http://localhost:9000/tokeninfo',
+    certsUrl: 'http://localhost:9000/certs',
   },
 };
 
@@ -119,7 +119,7 @@ const config =
   google: {
     clientId: 'something.apps.googleusercontent.com', // <-- replace
     authUrl: 'https://accounts.google.com/o/oauth2/auth',
-    tokenInfoUrl: 'https://oauth2.googleapis.com/tokeninfo',
+    certsUrl: 'https://www.googleapis.com/oauth2/v3/certs',
   },
 };
 ```

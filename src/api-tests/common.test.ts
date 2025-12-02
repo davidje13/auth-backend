@@ -7,7 +7,7 @@ import 'lean-test';
 const GOOGLE_CONFIG = {
   clientId: 'my-client-id',
   authUrl: 'foo',
-  tokenInfoUrl: 'anything',
+  certsUrl: 'anything',
 };
 
 describe('/', () => {
@@ -27,7 +27,7 @@ describe('/', () => {
   it('does not include sensitive information', async ({ getTyped }) => {
     const response = await request(getTyped(SERVER)).get('/prefix').expect(200);
 
-    expect(response.body.google.tokenInfoUrl).toBeUndefined();
+    expect(response.body.google.certsUrl).toBeUndefined();
   });
 
   it('does not include unconfigured services', async ({ getTyped }) => {

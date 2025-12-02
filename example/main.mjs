@@ -12,7 +12,7 @@ const config = {
       // Refacto Local Testing - http://localhost:8080/google.html, no scopes
       '199202234207-la0v05druske1f1qoimg3sgkpua2nvc7.apps.googleusercontent.com',
     authUrl: 'https://accounts.google.com/o/oauth2/auth',
-    tokenInfoUrl: 'https://oauth2.googleapis.com/tokeninfo',
+    certsUrl: 'https://www.googleapis.com/oauth2/v3/certs',
   },
   github: {
     clientId: process.env['GITHUB_CLIENT'],
@@ -39,7 +39,7 @@ if (config.google.clientId === 'mock') {
   config.google = {
     clientId: 'mock',
     authUrl: `${mockURL}/auth`,
-    tokenInfoUrl: `${mockURL}/tokeninfo`,
+    certsUrl: `${mockURL}/certs`,
   };
 }
 

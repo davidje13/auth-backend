@@ -1,6 +1,6 @@
 import request from 'supertest';
-import jwt from 'jwt-simple';
 import { testServerRunner } from './testServerRunner';
+import { decodeJWT } from '../jwt/jwt';
 import { buildMockSsoApp } from '..';
 import 'lean-test';
 
@@ -62,13 +62,18 @@ describe('mock SSO', () => {
       const redirectUri = response.get('Location')!;
       const hashParams = new URLSearchParams(redirectUri.split('#')[1]);
       const token = hashParams.get('id_token');
-      const data = jwt.decode(token!, '', true);
+      const decoded = decodeJWT(token!, {
+        verifyKey: false,
+        verifyIss: false,
+        verifyAud: false,
+        verifyActive: false,
+      });
 
-      expect(data.aud).toEqual('my-client');
-      expect(data.nonce).toEqual('my-nonce');
-      expect(data.sub).toEqual('my-id');
-      expect(data.iat).toBeGreaterThanOrEqual(Math.floor(beforeTm / 1000));
-      expect(data.exp).toBeGreaterThan((data.iat as number) + 10);
+      expect(decoded.payload.aud).toEqual('my-client');
+      expect(decoded.payload.nonce).toEqual('my-nonce');
+      expect(decoded.payload.sub).toEqual('my-id');
+      expect(decoded.payload.iat).toBeGreaterThanOrEqual(Math.floor(beforeTm / 1000));
+      expect(decoded.payload.exp).toBeGreaterThan((decoded.payload.iat as number) + 10);
     });
   });
 });

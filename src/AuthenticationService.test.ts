@@ -8,7 +8,7 @@ describe('AuthenticationService', () => {
         google: {
           clientId: 'google-client-id',
           authUrl: 'google-auth-url',
-          tokenInfoUrl: 'google-token-info-url',
+          certsUrl: 'google-certs-url',
         },
         github: {
           clientId: 'github-client-id',
@@ -54,7 +54,7 @@ describe('AuthenticationService', () => {
         google: {
           clientId: 'google-client-id',
           authUrl: 'google-auth-url',
-          tokenInfoUrl: 'google-token-info-url',
+          certsUrl: 'google-certs-url',
         },
       });
 
