@@ -1,6 +1,6 @@
 {
   "name": "authentication-backend",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "private": true,
   "description": "minimal API for integration with external authentication providers",
   "author": "David Evans",
