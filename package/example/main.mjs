@@ -1,6 +1,7 @@
 import { join, dirname } from 'node:path';
 import { fileServer, getAddressURL, Router, WebListener } from 'web-listener';
-import { buildAuthenticationBackend, buildMockSsoApp } from '../build/index.mjs';
+import { buildAuthAPI } from 'authentication-backend/backend';
+import { buildMockSSO } from 'authentication-backend/mock';
 
 const BASEDIR = dirname(new URL(import.meta.url).pathname);
 const PORT = Number.parseInt(process.env['PORT'] ?? '8080');
@@ -33,7 +34,7 @@ const config = {
 };
 
 if (config.google.clientId === 'mock') {
-  const mockServer = buildMockSsoApp();
+  const mockServer = buildMockSSO();
   await new Promise((resolve) => mockServer.listen(0, 'localhost', resolve));
   const mockURL = getAddressURL(mockServer.address());
   config.google = {
@@ -47,7 +48,7 @@ function tokenGranter(userId, service, externalId) {
   return `a token for ${userId} (${service} ${externalId})`;
 }
 
-const auth = buildAuthenticationBackend(config, tokenGranter);
+const auth = buildAuthAPI(config, tokenGranter);
 const listener = new WebListener(
   new Router().mount('/api/sso', auth.router()).use(await fileServer(join(BASEDIR, 'static'))),
 );

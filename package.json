@@ -1,27 +1,37 @@
 {
   "name": "authentication-backend",
   "version": "1.4.0",
+  "private": true,
   "description": "minimal API for integration with external authentication providers",
-  "files": [
-    "build/**/*"
+  "author": "David Evans",
+  "license": "MIT",
+  "keywords": [
+    "oauth"
   ],
-  "main": "build/index.mjs",
-  "types": "build/index.d.ts",
+  "exports": {
+    "./backend": {
+      "default": "./backend/index.mjs",
+      "types": "./backend/index.d.ts"
+    },
+    "./jwt": {
+      "default": "./jwt/index.mjs",
+      "types": "./jwt/index.d.ts"
+    },
+    "./mock": {
+      "default": "./mock/index.mjs",
+      "types": "./mock/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "rm -r build || true; rollup --config rollup.config.mjs && rm -r build/types",
-    "start": "npm run build && node example/main.mjs",
+    "start": "package/build.sh && package/start.sh",
     "format": "prettier --write .",
-    "test": "tsc && prettier --check . && lean-test --preprocess=tsc --parallel"
+    "test": "lean-test --preprocess=tsc --parallel && package/build.sh && package/run.sh && tsc && prettier --check .",
+    "dopublish": "package/build.sh && npm publish package.tgz"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/davidje13/auth-backend.git"
   },
-  "keywords": [
-    "oauth"
-  ],
-  "author": "David Evans",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/davidje13/auth-backend/issues"
   },

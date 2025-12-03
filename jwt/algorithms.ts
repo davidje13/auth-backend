@@ -81,7 +81,14 @@ function makeRSA(alg: string, algorithm: string) {
       const publicKeyJWK = (
         publicKey instanceof KeyObject ? publicKey : createPublicKey(publicKey)
       ).export({ format: 'jwk' });
-      return { kty: 'RSA', kid: kid, alg: alg, use: 'sig', n: publicKeyJWK.n, e: publicKeyJWK.e };
+      return {
+        kty: 'RSA',
+        kid: kid,
+        alg: alg,
+        use: 'sig',
+        n: publicKeyJWK.n!,
+        e: publicKeyJWK.e!,
+      };
     },
   });
   return Object.assign(

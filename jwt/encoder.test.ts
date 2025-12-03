@@ -1,5 +1,5 @@
 import type { Signer, Verifier } from './algorithms';
-import { decodeJWT, encodeJWT, type DecodeOptions } from './jwt';
+import { decodeJWT, encodeJWT, type DecodeOptions } from './encoder';
 import 'lean-test';
 
 describe('encodeJWT', () => {

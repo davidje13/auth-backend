@@ -2,10 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { createServer } from 'node:http';
 import request from 'supertest';
 import { getAddressURL, requestHandler, sendJSON, WebListener } from 'web-listener';
-import { makeRandomRS256 } from '../jwt/algorithms';
-import { encodeJWT } from '../jwt/jwt';
-import { testServerRunner } from './testServerRunner';
-import { buildAuthenticationBackend } from '..';
+import { encodeJWT, makeRandomRS256 } from '../../jwt';
+import { testServerRunner } from '../../test-helpers/serverRunner';
+import { buildAuthAPI } from '..';
 import 'lean-test';
 
 describe('/google', () => {
@@ -25,7 +24,7 @@ describe('/google', () => {
       },
     };
 
-    return createServer(buildAuthenticationBackend(config, tokenGranter).router('/prefix'));
+    return createServer(buildAuthAPI(config, tokenGranter).router('/prefix'));
   });
 
   it('responds with a token for valid external tokens', async ({ getTyped }) => {

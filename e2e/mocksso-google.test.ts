@@ -1,13 +1,14 @@
 import { createServer } from 'node:http';
 import request from 'supertest';
 import { getAddressURL } from 'web-listener';
-import { testServerRunner } from './testServerRunner';
-import { buildAuthenticationBackend, buildMockSsoApp } from '..';
+import { testServerRunner } from '../test-helpers/serverRunner';
+import { buildAuthAPI } from '../backend';
+import { buildMockSSO } from '../mock';
 import 'lean-test';
 
 describe('mock SSO integration with Google SSO', () => {
-  const MOCK_SSO_SERVER = testServerRunner(() => buildMockSsoApp());
-  const MOCK_SSO_SERVER_2 = testServerRunner(() => buildMockSsoApp());
+  const MOCK_SSO_SERVER = testServerRunner(() => buildMockSSO());
+  const MOCK_SSO_SERVER_2 = testServerRunner(() => buildMockSSO());
 
   const SERVER = testServerRunner(({ getTyped }) => {
     const tokenGranter = (id: string): string => `issued-${id}`;
@@ -19,7 +20,7 @@ describe('mock SSO integration with Google SSO', () => {
       },
     };
 
-    return createServer(buildAuthenticationBackend(config, tokenGranter).router());
+    return createServer(buildAuthAPI(config, tokenGranter).router());
   });
 
   it('negotiates authentication successfully', async ({ getTyped }) => {

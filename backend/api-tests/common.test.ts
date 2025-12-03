@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import request from 'supertest';
-import { testServerRunner } from './testServerRunner';
-import { buildAuthenticationBackend } from '..';
+import { testServerRunner } from '../../test-helpers/serverRunner';
+import { buildAuthAPI } from '..';
 import 'lean-test';
 
 const GOOGLE_CONFIG = {
@@ -14,7 +14,7 @@ describe('/', () => {
   const SERVER = testServerRunner(() => {
     const config = { google: GOOGLE_CONFIG };
 
-    return createServer(buildAuthenticationBackend(config, () => '').router('/prefix'));
+    return createServer(buildAuthAPI(config, () => '').router('/prefix'));
   });
 
   it('responds with client-visible configuration', async ({ getTyped }) => {
@@ -49,7 +49,7 @@ describe('/service', () => {
   const SERVER = testServerRunner(() => {
     const config = { google: GOOGLE_CONFIG };
 
-    return createServer(buildAuthenticationBackend(config, () => '').router('/prefix'));
+    return createServer(buildAuthAPI(config, () => '').router('/prefix'));
   });
 
   it('responds HTTP Not Found for unknown services', async ({ getTyped }) => {

@@ -1,14 +1,27 @@
 {
   "compilerOptions": {
-    "target": "es2023",
-    "lib": ["es2023"],
-    "module": "nodenext",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+
     "strict": true,
-    "esModuleInterop": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+
     "isolatedModules": true,
     "erasableSyntaxOnly": true,
-    "skipLibCheck": true,
-    "noEmit": true
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true
   },
-  "include": ["src"]
+  "include": ["backend", "jwt", "mock", "e2e", "test-helpers"]
 }

@@ -1,5 +1,4 @@
-import { loadJWKSVerifiers, type Verifier } from '../jwt/algorithms';
-import { decodeJWT } from '../jwt/jwt';
+import { decodeJWT, loadJWKSVerifiers, type Verifier } from '../../jwt';
 import type { Details } from './types';
 
 export interface GoogleConfig {

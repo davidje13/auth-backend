@@ -27,7 +27,7 @@ npm install --save authentication-backend
 ```javascript
 import { randomUUID } from 'node:crypto';
 import express from 'express';
-import { buildAuthenticationBackend } from 'authentication-backend';
+import { buildAuthAPI } from 'authentication-backend/backend';
 
 const config = {
   google: {
@@ -56,12 +56,13 @@ function tokenGranter(userId, service, externalId) {
   return myUserSessionToken;
 }
 
-const auth = buildAuthenticationBackend(config, tokenGranter);
+const auth = buildAuthAPI(config, tokenGranter);
 express().use('/my-prefix', auth.router).listen(8080);
 ```
 
 You will need to do some work for each service on the client-side too, including some security
-checks. See the source in `/example/static` for a reference implementation.
+checks. See the source in [`/package/example/static`](/package/example/static) for a reference
+implementation.
 
 ### Mock SSO server
 
@@ -74,9 +75,10 @@ for local development and testing):
 
 ```javascript
 import express from 'express';
-import { buildAuthenticationBackend, buildMockSsoApp } from 'authentication-backend';
+import { buildAuthAPI } from 'authentication-backend/backend';
+import { buildMockSSO } from 'authentication-backend/mock';
 
-buildMockSsoApp().listen(9000);
+buildMockSSO().listen(9000);
 
 const config =
   google: {
@@ -88,7 +90,7 @@ const config =
 
 // ...
 
-const auth = buildAuthenticationBackend(config, tokenGranter);
+const auth = buildAuthAPI(config, tokenGranter);
 express()
   .use('/my-prefix', auth.router)
   .listen(8080);
@@ -251,7 +253,7 @@ where relevant. In particular this implementation is protected against:
   the GitLab integration
 - [4.8 PKCE Downgrade Attack](https://datatracker.ietf.org/doc/html/rfc9700#name-pkce-downgrade-attack)
 
-And the example client shows how to additionally protect against:
+And the [example client](/package/example) shows how to additionally protect against:
 
 - [4.5 Authorization Code Injection](https://datatracker.ietf.org/doc/html/rfc9700#name-nonce) for
   all integrations

@@ -1,11 +1,11 @@
 import request from 'supertest';
-import { testServerRunner } from './testServerRunner';
-import { decodeJWT } from '../jwt/jwt';
-import { buildMockSsoApp } from '..';
+import { testServerRunner } from '../test-helpers/serverRunner';
+import { decodeJWT } from '../jwt';
+import { buildMockSSO } from '.';
 import 'lean-test';
 
 describe('mock SSO', () => {
-  const SERVER = testServerRunner(() => buildMockSsoApp());
+  const SERVER = testServerRunner(() => buildMockSSO());
 
   describe('GET /auth', () => {
     it('returns HTML with reflected values', async ({ getTyped }) => {

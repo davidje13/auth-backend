@@ -1,8 +1,8 @@
 import { createServer } from 'node:http';
 import request from 'supertest';
 import { getAddressURL, getFormData, HTTPError, Router, sendJSON, WebListener } from 'web-listener';
-import { testServerRunner } from './testServerRunner';
-import { buildAuthenticationBackend } from '..';
+import { testServerRunner } from '../../test-helpers/serverRunner';
+import { buildAuthAPI } from '..';
 import 'lean-test';
 
 describe('/gitlab', () => {
@@ -45,7 +45,7 @@ describe('/gitlab', () => {
       },
     };
 
-    return createServer(buildAuthenticationBackend(config, tokenGranter).router('/prefix'));
+    return createServer(buildAuthAPI(config, tokenGranter).router('/prefix'));
   });
 
   it('responds with a token for valid codes', async ({ getTyped }) => {

@@ -1,0 +1,12 @@
+{
+  "name": "authentication-backend-package-test",
+  "private": true,
+  "scripts": {
+    "start": "node example/main.mjs",
+    "test": "node commonjs.js && node es6modules.mjs && tsc --project tsconfig.json"
+  },
+  "devDependencies": {
+    "authentication-backend": "file:authentication-backend.tgz",
+    "typescript": "5.9.x"
+  }
+}

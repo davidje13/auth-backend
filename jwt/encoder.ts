@@ -25,15 +25,15 @@ export function decodeJWT(
   }
 
   const [, headerEncoded, payloadEncoded, signatureEncoded] = match;
-  const header = dec(headerEncoded);
-  const payload = dec(payloadEncoded);
+  const header = dec(headerEncoded!);
+  const payload = dec(payloadEncoded!);
 
   if (verifyKey !== false) {
     verify(
       `${headerEncoded}.${payloadEncoded}`,
       header,
       asArray(verifyKey),
-      Buffer.from(signatureEncoded, 'base64url'),
+      Buffer.from(signatureEncoded!, 'base64url'),
     );
   }
 

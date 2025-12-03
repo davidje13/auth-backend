@@ -5,7 +5,7 @@ export type TokenGranter = (userId: string, service: string, externalId: string)
 
 const SERVICE_PATH = /^([a-z0-9]+)\/?$/;
 
-export function buildAuthenticationRouter(
+export function requestHandler(
   authenticationService: AuthenticationService,
   tokenGranter: TokenGranter,
 ) {

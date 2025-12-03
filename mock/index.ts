@@ -1,14 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { createServer, type Server, type ServerResponse } from 'node:http';
 import { text } from 'node:stream/consumers';
-import { encodeJWT } from '../jwt/jwt';
-import { makeRandomRS256 } from '../jwt/algorithms';
+import { encodeJWT, makeRandomRS256 } from '../jwt';
 import { loginPage } from './authContent';
 
 // This is for local development and testing; it simulates a
 // Google sign in handshake.
 
-export function buildMockSsoApp({ iss = 'https://accounts.google.com' } = {}): Server {
+export function buildMockSSO({ iss = 'https://accounts.google.com' } = {}): Server {
   const key = makeRandomRS256('mock-key');
   const jwks = { keys: [key.toJWK()] };
 

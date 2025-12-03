@@ -1,6 +1,6 @@
-import { extractId as extractGoogleId, GoogleConfig } from './providers/GoogleSso';
-import { extractId as extractGitHubId, GitHubConfig } from './providers/GitHubSso';
-import { extractId as extractGitLabId, GitLabConfig } from './providers/GitLabSso';
+import { extractId as extractGoogleId, type GoogleConfig } from './providers/GoogleSso';
+import { extractId as extractGitHubId, type GitHubConfig } from './providers/GitHubSso';
+import { extractId as extractGitLabId, type GitLabConfig } from './providers/GitLabSso';
 import type { Details, Extractor } from './providers/types';
 
 type ConfiguredExtractor = (details: Details) => Promise<string>;
