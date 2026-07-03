@@ -1,9 +1,10 @@
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { fileServer, getAddressURL, Router, WebListener } from 'web-listener';
 import { buildAuthAPI } from 'authentication-backend/backend';
 import { buildMockSSO } from 'authentication-backend/mock';
 
-const BASEDIR = dirname(new URL(import.meta.url).pathname);
+const BASEDIR = dirname(fileURLToPath(import.meta.url));
 const PORT = Number.parseInt(process.env['PORT'] ?? '8080');
 
 const config = {
